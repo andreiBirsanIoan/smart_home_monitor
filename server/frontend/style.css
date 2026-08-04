@@ -1,0 +1,47 @@
+body{
+    text-align: center;
+    background-color:#0c101b;
+    color:white;
+    font-family: 'Courier New', Courier, monospace;
+}
+#btn-data{
+    margin:20px;
+    background-color:blue;
+    color:white;
+    padding:15px;
+}
+.sensor-data{
+    background-color: #111625;
+    border:1px solid rgb(10, 12, 40);
+    border-radius:6px;
+    color:#4da6ff;
+    margin:35px auto;
+    padding:15px;
+    text-align:center;
+    width:50%;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.3);
+    
+    /*background-color: #ffffff;*/
+     animation: aparitieFinuta 0.5s ease-out forwards;
+     opacity:0;
+}
+.sensor-data p {
+    color: #38b6ff;                 /* Textul turcoaz din imaginea ta */
+    margin: 10px 0;                 /* Spațiu între rândurile de text */
+    font-family: monospace;
+}
+@keyframes aparitieFinuta {
+    from {
+        opacity: 0;
+        transform: translateY(20px); /* Vine de la 20 de pixeli mai de jos */
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);    /* Ajunge în poziția lui normală */
+    }
+}
+.separator-senzor{
+    border-top: 3px solid rgb(10, 12, 40);
+    border-bottom:0;
+   /* padding:15px;*/
+}
