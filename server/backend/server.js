@@ -22,7 +22,7 @@ app.get('/api/senzori', (req, res) => {
   res.json(senzoriData);
 });
 app.get('/api/istoric', async(req,res)=>{
-  const [rows]=await pool.query('SELECT * FROM sensors ORDER BY id DESC LIMIT 20');
+  const [rows]=await pool.query('SELECT * FROM sensors ORDER BY id DESC LIMIT 5');
   res.json(rows);
 });
 app.listen(8000, () => console.log('Server pe port 8000'));

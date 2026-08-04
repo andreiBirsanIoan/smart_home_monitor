@@ -3,16 +3,43 @@
     <head>
         <meta charset="UTF-8">
         <link rel="stylesheet" href="style.css">
+        <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
         <title>Pagina Monitorizare</title>
     </head>
     <body>
-        <h1>Bine ai venit! </h1>
-        <button id="btn-data">Vizualizare date</button>
-        <div id="lista-date" class="sensor-data"></div>
-        <!-- <p>Temperatura: <span id="temperatura">--</span>°C</p>
-        <p>Miscare:<span id="miscare">--</span></p>
-        <p>Timestamp:<span id="timestamp">--</span></p> -->
+        <div class="page">
+        <div class="aside">
+            <h1>SMART HOME</h1>
+            <nav class="meniu">
+                <a href="analytics.html">Date senzori</a>
+                <a href="logs.html">Istoric securitate</a>
+            </nav>
+        </div>
+        <div class="display">
+        <h2>REZUMAT</h2>
+        <div class="cards">
+            <div class="sup">
+                <div class="temp">
+                    <p >TEMPERATURA LIVE:</p>
+                    
+                </div>
+                <div class="move">
+                    <p >MISCARE LIVE:</p>
+                    
+                </div>
+            </div>
+            <div class="zona-grafic">
+                <canvas id="grafic"></canvas>
+            </div>
+        
+        </div>
+        </div>
+        <!-- <button id="btn-data">Vizualizare date</button>
+        <div id="lista-date" class="sensor-data"></div> -->
+        </div>
+    </div>
         <script src="dateCasa.js"></script>
+        
     </body>
 
 </html>
