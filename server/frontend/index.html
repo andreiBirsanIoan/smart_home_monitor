@@ -9,7 +9,15 @@
     <body>
         <div class="page">
         <div class="aside">
-            <h1>SMART HOME</h1>
+            <div class="logo-container">
+  <svg width="32" height="32" viewBox="0 0 32 32" xmlns="http://www.w3.org/2000/svg">
+    <rect x="2" y="2" width="28" height="28" rx="8" fill="#0D1527" stroke="#274792" stroke-width="1.5"/>
+    <path d="M16 8L24 14V24H20V18H12V24H8V14L16 8Z" fill="#4da6ff"/>
+    <circle cx="16" cy="16" r="1.5" fill="#0D1527"/>
+  </svg>
+  <h1>SMART HOME</h1>
+</div>
+            
             <nav class="meniu">
                 <a href="analytics.html">Date senzori</a>
                 <a href="logs.html">Istoric securitate</a>
@@ -21,8 +29,11 @@
             <div class="sup">
                 <div class="temp">
                     <p >TEMPERATURA LIVE:</p>
+                    <p id="valoare"> </p>
+                    <progress id="progress-bar" max="40" min="10" value=""></progress>
                     
                 </div>
+                
                 <div class="move">
                     <p >MISCARE LIVE:</p>
                     
