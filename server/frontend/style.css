@@ -133,12 +133,10 @@ h2{
     transition: background-color 0.15s ease;
 }
 .meniu a:hover {
-    color: #38b6ff;                  /* Devine albastru luminos la hover */
-}
-.meniu a:active {
-    background-color: #0A101F; /* Un albastru foarte închis pentru interiorul pătratului */
+    color: #38b6ff;    
+    background-color: #152449; /* Un albastru foarte închis pentru interiorul pătratului */
     border: 1px solid #141d30;   /* Bordura fină a pătratului */
-    color: #38b6ff;              /* Textul devine albastru luminos la apăsare */
+    color: #38b6ff;                /* Devine albastru luminos la hover */
 }
 #btn-data{
     margin:20px;
@@ -146,27 +144,7 @@ h2{
     color:white;
     padding:15px;
 }
-.sensor-data>div{
-    min-width:300px;/*ajustare selector */
-    background-color: #111625;
-    border:1px solid rgb(10, 12, 40);
-    border-radius:6px;
-    color:#4da6ff;
-    margin:35px auto;
-    padding:15px;
-    text-align:center;
-    width:50%;
-    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.3);
-    
-    /*background-color: #ffffff;*/
-     animation: aparitieFinuta 0.5s ease-out forwards;
-     opacity:0;
-}
-.sensor-data p {
-    color: #38b6ff;                 /* Textul turcoaz din imaginea ta */
-    margin: 10px;                 /* Spațiu între rândurile de text */
-    font-family: monospace;
-}
+
 @keyframes aparitieFinuta {
     from {
         opacity: 0;

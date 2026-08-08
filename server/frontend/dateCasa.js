@@ -8,6 +8,7 @@ const progressBar=document.getElementById("progress-bar");
 progressBar.min=10;
 progressBar.max=40;
 async function luareDatele(){
+    
     const response=await fetch("http://localhost:8000/api/senzori");
     const data=await response.json();
     document.getElementById('temperatura').textContent=data.temperatura;
@@ -18,7 +19,12 @@ async function luareDatele(){
 }
 let afisare=document.getElementById("lista-date");
 async function afisareDate(){
-const response=await fetch("http://localhost:8000/api/istoric")
+    const token = localStorage.getItem('token');
+const response=await fetch("http://localhost:8000/api/istoric",{
+    headers:{
+        "Authorization": "Bearer "+token
+    }
+});
 const data=await response.json(); 
 objArray=data;
 tempArray=objArray.map(obj=>obj.temperatura)
@@ -28,7 +34,7 @@ timeArray=objArray.map(obj=>{
     const minute=d.getMinutes().toString().padStart(2,'0'); 
     return ore+":"+minute;   
 });
-let tempActual=objArray.slice(-1)[0];
+let tempActual=objArray[0];
 valTemp.textContent+=tempActual.temperatura +"°C";
 
 progressBar.value=tempActual.temperatura;
@@ -61,7 +67,7 @@ progressBar.value=tempActual.temperatura;
                 }
             },
             legend: {
-                display: false             /* Ascunde legenda implicită dacă nu o vrei */
+                display: true           /* Ascunde legenda implicită dacă nu o vrei */
             }
         }
     }

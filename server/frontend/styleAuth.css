@@ -1,0 +1,116 @@
+body {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    min-height: 100vh;
+    background-color: #090D1A;
+    background-image: 
+    linear-gradient(to right, rgba(255, 255, 255, 0.05) 1px, transparent 1px),
+    linear-gradient(to bottom, rgba(255, 255, 255, 0.05) 1px, transparent 1px);
+  background-size: 40px 40px;
+    color: gray;
+    font-family: 'Courier New', Courier, monospace;
+    margin: 0;
+}
+/* Stilul de bază pentru toate cele 4 colțuri */
+.colt {
+    position: absolute;
+    width: 20px;         /* Lățimea fixă a colțului (nu se mai unește pe lățime) */
+    height: 20px;        /* Înălțimea fixă a colțului (nu se mai unește pe înălțime) */
+}
+
+/* Poziționare și bordură pentru fiecare colț în parte */
+.sus-stanga {
+    top: -10px; left: -10px;
+    border-top: 2px solid #38b6ff;
+    border-left: 2px solid #38b6ff;
+}
+
+.sus-dreapta {
+    top: -10px; right: -10px;
+    border-top: 2px solid #38b6ff;
+    border-right: 2px solid #38b6ff;
+}
+
+.jos-stanga {
+    bottom: -10px; left: -10px;
+    border-bottom: 2px solid #38b6ff;
+    border-left: 2px solid #38b6ff;
+}
+
+.jos-dreapta {
+    bottom: -10px; right: -10px;
+    border-bottom: 2px solid #38b6ff;
+    border-right: 2px solid #38b6ff;
+}
+
+.formular{
+    position:relative;
+    display:flex;
+     border:none;
+     padding:50px;
+         background-color: #080c16;
+    flex-direction: column;
+    justify-content: center;
+     align-items: center;
+     width: 100%;
+     height:100%;
+     max-width:300px;
+     
+     min-height:300px;
+     min-width: 300px;
+     --umbra-X: 10px;         /* Deplasare orizontală */
+    --umbra-Y: 10px;         /* Deplasare verticală (apasă cardul în jos) */
+    --umbra-blur: 55px;     /* Cât de mult se împrăștie umbra în exterior */
+    --umbra-culoare: rgba(24, 40, 110, 0.9); /* Culoarea neagră cu opacitate 50% */
+
+    /* Aplicarea finală în exterior (am șters cuvântul 'inset') */
+    box-shadow: 
+        var(--umbra-X) 
+        var(--umbra-Y) 
+        var(--umbra-blur) 
+        var(--umbra-culoare);
+}
+
+.register-form {
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+/*pe elemente nu pe form, pe form nu se aplica*/
+.grup-camp {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;  /* SOLUȚIA: Aliniază perfect textul în stânga */
+    width: 100%;                 
+}
+
+.eticheta-camp {
+    font-family: 'Orbitron', sans-serif;
+    color: #38b6ff;           
+    font-size: 11px;
+    letter-spacing: 1.5px;
+    margin-bottom: 10px;      /* Distanța fină dintre text și căsuța de sub el */
+}
+#register-form input,
+#register-form button {
+ background-color: #070c17;     /* Schimbă albul acela urât cu nuanța terminalului Sci-Fi */
+    color: #286b91;                /* Textul pe care îl tastezi devine turcoaz luminos */
+    border: 1px solid #1e293b;     /* Bordura fină și mată a casetelor */
+    padding: 15px;                 /* Oferă spațiu textului din interiorul căsuței */
+    width: 300px;                   /* Forțează elementele să ocupe toată lățimea disponibilă din formular */
+    box-sizing: border-box;        /* Împiedică elementele să iasă în afara formularului din cauza padding-ului */
+     margin: 0;
+    margin-bottom: 25px;   
+    letter-spacing: 2px;
+}
+#register-form input::placeholder{
+    color:#286b91;  
+    letter-spacing: 2px;
+}
+#register-form button:hover {
+    background-color: rgba(56, 182, 255, 0.05);
+    border-color: #38b6ff;
+}
