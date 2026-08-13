@@ -17,7 +17,7 @@ app.post('/api/senzori', async(req, res) => {
   senzoriData = req.body;
 
   
-  await pool.query(`INSERT INTO sensors(temperatura,miscare) VALUES(?,?)`,[senzoriData.temperatura,senzoriData.miscare]);
+  await pool.query(`INSERT INTO sensors(temperatura,miscare,umiditate) VALUES(?,?,?)`,[senzoriData.temperatura,senzoriData.miscare,senzoriData.umiditate]);
   res.json({ status: 'ok' });
 });
 

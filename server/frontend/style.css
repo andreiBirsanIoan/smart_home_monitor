@@ -59,20 +59,21 @@ h2{
     display:flex;
     flex-direction: column;
     gap:10px;
-    margin:0px;
+    
     
 }
 .sup{
     display:flex;
     flex-direction:row;
-    gap:15%;
+    gap:15px;
+    
 }
 .temp {
     text-align: left;
     border-radius: 15px;
     background-color: #0D1527;
     padding: 15px 100px 15px 30px;
-    margin-right: 150px;
+    margin-right: 250px;
     border: 1px solid #141d30;
 
     /* --- PARAMETRII UMBREI EXTERIOARE (DIN FIGMA) --- */
@@ -107,8 +108,34 @@ h2{
   background-color: #4da6ff;   /* partea "umplută" */
   border-radius: 2px;
 }
+   #progress-humid {
+  height: 1.5px;              /* înălțimea întregii bare, aici o controlezi */
+  -webkit-appearance: none;
+   width: calc(100% + 80px);
+  appearance: none;
+  
+  padding-right:0px;
+  border: none;
+}
+#progress-humid::-webkit-progress-bar {
+  background-color: #2a2f3a;   /* fundalul (partea "goală") */
+  border-radius: 2px;
+   
+}
 
+#progress-humid::-webkit-progress-value {
+  background-color: #4da6ff;   /* partea "umplută" */
+  border-radius: 2px;
+}
 #valoare {
+    color: #00b0ff;                  /* Albastru neon aprins din imagine */
+    font-family: 'Segoe UI', sans-serif;
+    font-size: 36px;
+    font-weight: 700;                /* Bold puternic */
+    text-align: left;
+    margin: 15px 0;
+}
+#umiditate {
     color: #00b0ff;                  /* Albastru neon aprins din imagine */
     font-family: 'Segoe UI', sans-serif;
     font-size: 36px;
@@ -164,12 +191,12 @@ h2{
     box-shadow: 0 0 15px rgba(56, 189, 248, 0.05);
     border: 1px solid #1e293b;
      border-radius: 15px;
-    padding:25px;
+    padding:15px;
    display: block !important;
     position: relative;
     width: 100%;       /* Ocupă toată lățimea containerului în care se află */
       /* Împiedică deformarea pe ecrane mari */
-    height: 350px !important;
+    height: 330px !important;
     margin-top: 30px; 
     border: 1px solid #1e293b;
      --umbra-X: 3px;         /* Deplasare orizontală */
