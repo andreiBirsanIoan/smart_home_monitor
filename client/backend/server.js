@@ -13,10 +13,7 @@ app.use(express.static('.')); // ← Asta servește fișierele din folder
 
 let senzoriData = {};//obiect, nu vector/array
 app.post('/api/senzori', async(req, res) => {
-
   senzoriData = req.body;
-
-  
   await pool.query(`INSERT INTO sensors(temperatura,miscare,umiditate) VALUES(?,?,?)`,[senzoriData.temperatura,senzoriData.miscare,senzoriData.umiditate]);
   res.json({ status: 'ok' });
 });
