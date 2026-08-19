@@ -6,8 +6,9 @@
 #include "DHT.h"
 #define SCREEN_WIDTH 128
 #define SCREEN_HEIGHT 64
+//SDA GPIO21
+//SCL GPIO22
 #define PIR_PIN 13
-#define POT_PIN 33
 #define BUZZ_PIN 25
 #define DHTPIN 26
 #define DHTTYPE DHT11
@@ -37,19 +38,18 @@ void setup(){
   Serial.println(WiFi.localIP());
   }
 void loop(){
-  //bool miscare=digitalRead(PIR_PIN);
-  bool miscare=0;
+  bool miscare=digitalRead(PIR_PIN);
+  //bool miscare=0;
   Serial.println(miscare);
   float temp =dht.readTemperature();
   float humid=dht.readHumidity();
-  int valoare=analogRead(POT_PIN);
   int prag=30;
    // sau valoarea reala/simulata;
-  if(temp>prag){
-    digitalWrite(BUZZ_PIN,HIGH);
+  if(temp>25.5){
+    digitalWrite(BUZZ_PIN,LOW);//modulul de buzzer merge pe logica inversa
   }
   else{
-    digitalWrite(BUZZ_PIN,LOW);
+    digitalWrite(BUZZ_PIN,HIGH);
   }
   display.clearDisplay();
   display.setTextSize(1);
@@ -67,7 +67,7 @@ void loop(){
                   ",\"umiditate\":" + String(humid) + 
                   ",\"miscare\":" + String(miscare ? "true" : "false") + "}";
                   Serial.println("WiFi status: " + String(WiFi.status()));
- client.begin(wifiClient, "http://192.168.0.101:8000/api/senzori");  // ← schimbat
+ client.begin(wifiClient, "http://192.168.0.150:8000/api/senzori");  // ← schimbat
   client.addHeader("Content-Type", "application/json");
   int httpCode = client.POST(text);
   Serial.println("HTTP Code: " + String(httpCode));

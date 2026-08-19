@@ -70,7 +70,8 @@ chartInstance=new Chart(graficDate,{
         },
         options: {
             responsive: true,
-            maintainAspectRatio: false,plugins: {
+            maintainAspectRatio: false,
+            plugins: {
                 title: {
                     display: true,             /* Forțează afișarea titlului */
                     text: 'ISTORIC EVOLUȚIE TEMPERATURĂ & UMIDITATE', /* Textul dorit */

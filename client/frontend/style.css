@@ -36,9 +36,11 @@ h2{
   padding: 0px 20px;
 }
 .meniu{
-    width: 200px;
-    margin-top:50px;
-    
+    width: 50px;
+    padding-top:200px;
+    margin-top:150px;
+    margin-right:50px;
+    /*height:90vh;*/
 }
 .display h2{
     text-align:left;
@@ -71,7 +73,7 @@ h2{
 .temp {
     text-align: left;
     border-radius: 15px;
-    background-color: #0D1527;
+    background-color: #0d1527;
     padding: 15px 100px 15px 30px;
     margin-right: 250px;
     border: 1px solid #141d30;
@@ -212,4 +214,57 @@ h2{
         var(--umbra-culoare);
     background-color: #0D1527;
     
+}
+.data_analysis{
+    display:flex;
+    
+}
+.meniu
+.temp_status,.humid_status{
+    background-color:#0d1527;
+    
+
+}
+#temp_curent,#humid_curent{
+    color:#00b0ff;
+}
+#min_sesiune,#min_sesune_h{
+    color:red;
+}
+#max_sesiune,#max_sesiune_h{
+    color:greenyellow;
+}
+#avg_sesiune,#avg_sesiune_h{
+    color:white;
+}
+.grafic-zone {
+    box-shadow: 0 0 15px rgba(56, 189, 248, 0.05);
+    border: 1px solid #1e293b;
+     border-radius: 15px;
+    padding:15px;
+   display: block !important;
+    position: relative;
+    width: 80%;       /* Ocupă toată lățimea containerului în care se află */
+      /* Împiedică deformarea pe ecrane mari */
+    height: 330px !important;
+    margin-top: 30px; 
+    border: 1px solid #1e293b;
+     --umbra-X: 3px;         /* Deplasare orizontală */
+    --umbra-Y: 3px;         /* Deplasare verticală (apasă cardul în jos) */
+    --umbra-blur: 25px;     /* Cât de mult se împrăștie umbra în exterior */
+    --umbra-culoare: rgba(24, 40, 110, 0.9); /* Culoarea neagră cu opacitate 50% */
+
+    /* Aplicarea finală în exterior (am șters cuvântul 'inset') */
+    box-shadow: 
+        var(--umbra-X) 
+        var(--umbra-Y) 
+        var(--umbra-blur) 
+        var(--umbra-culoare);
+    background-color: #0D1527;
+    
+}
+.main{
+    
+    margin-left:300px;
+    height:100vh;
 }
