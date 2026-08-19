@@ -3,7 +3,7 @@
 Proiect IoT complet: ESP32 citește senzori și trimite date către un server Express
 
 ## Ce face
--Citește temperatură (momentan simulată) și mișcare (senzor real HC-SR501)
+-Citește temperatura de la un senzor DHT11 și mișcare (senzor real HC-SR501)
 -Alarmă (LED + buzzer) când temperatura trece de un prag reglabil manual (potențiometru)
 -Afișare live pe ecran OLED, direct pe dispozitiv
 -Trimite date către server prin HTTP POST (JSON)
