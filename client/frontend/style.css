@@ -1,8 +1,13 @@
 body{
+    margin:0;
+    padding:0;
     text-align: center;
     background-color:#090D1A;
     color:gray;
     font-family: 'Courier New', Courier, monospace;
+}
+.page{
+    height:95vh;
 }
 .logo-container {
     display: flex;
@@ -12,7 +17,10 @@ body{
     padding: 20px 0;         /* Spațiere sus/jos */
     margin-bottom: 40px;     /* Înlocuiește vechiul margin-bottom de 250px de pe h1 */
     border-bottom: 1px solid #274792; /* Linia albastră decorativă se mută sub întreg containerul */
-    width: 100%;
+    border-width: 100%;
+    padding-top:25px;
+     padding-right:8px;
+     box-sizing: border-box;
 }
 .logo-container h1 {
     font-size: 24px;
@@ -20,57 +28,83 @@ body{
     color: white;
     white-space: nowrap;     /* Forțează textul să rămână pe un singur rând */
     margin: 0;               /* Elimină marginile implicite care stricau alinierea */
-}
-h2{
-    color:white;
+    
 }
 
+.titlu_si_ceas{
+    justify-content: space-between;
+}
+.titlu_si_ceas h2{
+    text-align:left;
+    margin-top:50px;
+     color:white;
+     margin-top:30px;
+      display: flex !important;
+    flex-direction: row;            /* Forțează elementele să stea obligatoriu pe același rând */
+    justify-content: space-between; /* Împinge REZUMAT în stânga complet și ceasul în dreapta complet */
+    align-items: center;            /* Le aliniază perfect la mijloc pe verticală (la nivel) */
+    width: 100%;
+}
+
+.ceas-digital{
+    padding:8px 20px;
+    background-color: #0d1527;
+    border: 1px solid #1e293b;
+    border-radius: 8px;
+    color: #00b0ff;
+    font-family: 'Segoe UI', sans-serif;
+    font-size: 16px; /* Îl facem puțin mai mic decât titlul ca să arate elegant */
+    font-weight: 600;
+    margin: 0;   
+}
 .page{
  display:flex; 
  gap:20px;
+  height: 100vh;     /* Ocupă exact înălțimea ecranului monitorului */
+    width: 100vw;      /* Ocupă lățimea ecranului */
+    overflow: hidden;  /* Interzice total scroll-ul pe toată pagina */
 }
 .aside {
     background-color: #0D1527;
-  width: 200px;
-  height:95vh;
-  padding: 0px 20px;
+  width: 250px;
+  height:100%;
+  padding: 0px 0px;
 }
 .meniu{
-    width: 50px;
-    padding-top:200px;
-    margin-top:150px;
+    width: 100%;
+    padding-top:75px;
+    margin-top:20px;
     margin-right:50px;
-    /*height:90vh;*/
+    height:100%;   
 }
-.display h2{
-    text-align:left;
-}
-.display {
-    
-    /*background-color: #0D1527;*/
-   /*width:100vh;*/
+
+.display,.main {
   flex-grow: 1;
   display: flex;
   flex-direction: column;
   /*align-items: center;*/
-  max-width: 1024px;
-  margin:20px;
-  
+   margin: 20px 0px 20px 20px;
+   padding-right: 35px;         /* Împinge graficul și cardurile în stânga, lăsând un spațiu curat față de scroll */
+  box-sizing: border-box;  
+  height:calc(100vh - 40px);
+   overflow-y: auto;           /* Pornește scroll-ul vertical DOAR când conținutul depășește ecranul */
+     overflow-x: hidden;
 }
+
 .cards{
     display:flex;
     flex-direction: column;
-    gap:10px;
-    
-    
+    gap:50px;
+    margin:50px;
 }
 .sup{
     display:flex;
     flex-direction:row;
     gap:15px;
-    
+     width: 100%;
+    width: calc(100% - 30px) !important;
 }
-.temp {
+.temp,.humid {
     text-align: left;
     border-radius: 15px;
     background-color: #0d1527;
@@ -189,7 +223,7 @@ h2{
     border-bottom:0;
    /* padding:15px;*/
 }
-.zona-grafic {
+.zona-grafic,.grafic-zone {
     box-shadow: 0 0 15px rgba(56, 189, 248, 0.05);
     border: 1px solid #1e293b;
      border-radius: 15px;
@@ -198,35 +232,63 @@ h2{
     position: relative;
     width: 100%;       /* Ocupă toată lățimea containerului în care se află */
       /* Împiedică deformarea pe ecrane mari */
-    height: 330px !important;
-    margin-top: 30px; 
+    height: 430px !important;
+    margin-top: 30px;
+    margin-right:50px; 
     border: 1px solid #1e293b;
      --umbra-X: 3px;         /* Deplasare orizontală */
     --umbra-Y: 3px;         /* Deplasare verticală (apasă cardul în jos) */
-    --umbra-blur: 25px;     /* Cât de mult se împrăștie umbra în exterior */
+    --umbra-blur: 15px;     /* Cât de mult se împrăștie umbra în exterior */
     --umbra-culoare: rgba(24, 40, 110, 0.9); /* Culoarea neagră cu opacitate 50% */
-
+width: 100%;
+    width: calc(100% - 30px) !important;
+    transition: border-color 0.3s ease;
     /* Aplicarea finală în exterior (am șters cuvântul 'inset') */
+    
+    background-color: #0D1527;
+     flex-shrink: 0;
+     margin-bottom: 40px; 
+}
+.zona-grafic{
     box-shadow: 
         var(--umbra-X) 
         var(--umbra-Y) 
         var(--umbra-blur) 
         var(--umbra-culoare);
-    background-color: #0D1527;
-    
 }
 .data_analysis{
     display:flex;
+    gap:100px;
+     gap: 30px;                /* Spațiu curat între cardul de Temp și cel de Humid */
+    justify-content: fill;    /* Permite cardurilor să respire */
+    padding-bottom: 50px;     /* Spațiu de siguranță jos, ca să poți citi „Medie” fără să fie lipit de ecran */
+    width: 100%;
+    width: calc(100% - 30px) !important;
+    margin-right: 30px;
     
+    padding-bottom: 50px;
+    flex-shrink: 0;
 }
-.meniu
+
+
 .temp_status,.humid_status{
     background-color:#0d1527;
-    
+    border-radius: 15px;
+    padding:15px;
+   flex-grow: 1;
+   margin:0px;
+    border: 1px solid #1e293b; /* Bordura inițială, mai închisă */
+    transition: border-color 0.3s ease;
+}
+.current_temp,.min_temp,.max_temp,.avg_temp{
+     justify-content: space-between;
+    display:flex;
 
+    border-bottom:1px solid #2a2f3a; 
 }
 #temp_curent,#humid_curent{
     color:#00b0ff;
+    text-align: right;
 }
 #min_sesiune,#min_sesune_h{
     color:red;
@@ -237,34 +299,37 @@ h2{
 #avg_sesiune,#avg_sesiune_h{
     color:white;
 }
-.grafic-zone {
-    box-shadow: 0 0 15px rgba(56, 189, 248, 0.05);
-    border: 1px solid #1e293b;
-     border-radius: 15px;
-    padding:15px;
-   display: block !important;
-    position: relative;
-    width: 80%;       /* Ocupă toată lățimea containerului în care se află */
-      /* Împiedică deformarea pe ecrane mari */
-    height: 330px !important;
-    margin-top: 30px; 
-    border: 1px solid #1e293b;
-     --umbra-X: 3px;         /* Deplasare orizontală */
-    --umbra-Y: 3px;         /* Deplasare verticală (apasă cardul în jos) */
-    --umbra-blur: 25px;     /* Cât de mult se împrăștie umbra în exterior */
-    --umbra-culoare: rgba(24, 40, 110, 0.9); /* Culoarea neagră cu opacitate 50% */
 
-    /* Aplicarea finală în exterior (am șters cuvântul 'inset') */
-    box-shadow: 
-        var(--umbra-X) 
-        var(--umbra-Y) 
-        var(--umbra-blur) 
-        var(--umbra-culoare);
-    background-color: #0D1527;
-    
+.main h2{
+    text-align: left;
+    margin-bottom:50px;
 }
-.main{
-    
-    margin-left:300px;
-    height:100vh;
+/* --- STILIZARE PERSONALIZATĂ PENTRU BARA DE SCROLL --- */
+
+/* 1. Definim lățimea barei de scroll */
+.display::-webkit-scrollbar, 
+.main::-webkit-scrollbar {
+    width: 6px; /* O facem subțire și discretă */
+}
+
+/* 2. Fundalul pe care culisează bara (track-ul) */
+.display::-webkit-scrollbar-track, 
+.main::-webkit-scrollbar-track {
+    background: #090D1A; /* Aceeași culoare ca fundalul paginii */
+}
+
+/* 3. Partea mobilă pe care tragi cu mouse-ul (thumb-ul) */
+.display::-webkit-scrollbar-thumb, 
+.main::-webkit-scrollbar-thumb {
+    background: #274792; /* Albastrul tău de accent de la logo/borduri */
+    border-radius: 10px; /* O rotunjim fin la capete */
+}
+
+/* 4. Efect de lumină la trecerea cu mouse-ul peste ea */
+.display::-webkit-scrollbar-thumb:hover, 
+.main::-webkit-scrollbar-thumb:hover {
+    background: #4da6ff; /* Devine albastru deschis neon la hover */
+}
+.temp_status:hover, .humid_status:hover,.grafic-zone:hover,.zona-grafic:hover,.temp:hover,.humid:hover {
+    border-color: #4da6ff; /* Albastrul deschis neon pe care l-ai folosit la grafic */
 }

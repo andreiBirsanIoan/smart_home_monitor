@@ -7,21 +7,46 @@
         <title>Analiza date</title>
     </head>
     <body>
+        <div class="page">
+        <div class ="aside">
+            <div class="logo-container">
+  <svg width="32" height="32" viewBox="0 0 32 32" xmlns="http://www.w3.org/2000/svg">
+    <rect x="2" y="2" width="28" height="28" rx="8" fill="#0D1527" stroke="#274792" stroke-width="1.5"/>
+    <path d="M16 8L24 14V24H20V18H12V24H8V14L16 8Z" fill="#4da6ff"/>
+    <circle cx="16" cy="16" r="1.5" fill="#0D1527"/>
+  </svg>
+  <h1>SMART HOME</h1>
+</div>
         <nav class="meniu">
             <a href="index.html">Pagina Principala</a>
             <a href="logs.html">Date securitate</a>
-        </nav>
+        </nav></div>
         <div class="main">
-        <div class="grafic-zone">
+            <div class="titlu_si_ceas">
+            <h2>ANALIZA SENZORI <span id="ceas" class="ceas-digital">00:00:00</span></h2>
+            </div>
+            <div class="grafic-zone">
         <canvas id="grafic"></canvas>
         </div>
         <div class="data_analysis">
             <div class="temp_status">
                 <h3>STATUS TEMPERATURA </h3>
-                <p id="temp_curent"> </p>
-                <p id="min_sesiune"></p>
-                <p id="max_sesiune"></p>
-                <p id="avg_sesiune"></p>
+                <div class="current_temp">
+                    <p id="temp_curent_title">Acum:</p>
+                    <p id="temp_curent"></p>
+                </div>
+                <div class="min_temp">
+                    <p id="min_sesiune_title">Minim</p>
+                    <p id="min_sesiune"></p>
+                </div>  
+                <div class="max_temp">
+                    <p id="max_sesiune_title">Maxim</p>
+                    <p id="max_sesiune"></p>
+                </div>
+                <div class="avg_temp">
+                    <p id="avg_sesiune_title">Medie</p>
+                    <p id="avg_sesiune"></p>
+                </div>
             </div>
             <div class="humid_status">
                 <h3>STATUS UMIDITATE</h3>
@@ -32,6 +57,7 @@
             </div>
         </div>
        </div> 
+        </div>
         <script src="analytics.js"></script>
     </body>
 </html>

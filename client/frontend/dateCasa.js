@@ -8,6 +8,7 @@ let valTemp=document.getElementById("valoare");
 let valHumid=document.getElementById("umiditate");
 const progressBar=document.getElementById("progress-bar");
 const progressHumid=document.getElementById("progress-humid");
+const ceasAutomat=document.getElementById("ceas");
 progressBar.min=10;
 progressBar.max=40;
  let chartInstance = null; 
@@ -37,7 +38,8 @@ async function afisareDate(){
         const d=new Date(obj.timestamp);
         const ore=d.getHours().toString().padStart(2,'0');
         const minute=d.getMinutes().toString().padStart(2,'0'); 
-        return ore+":"+minute;   
+        const secunde=d.getSeconds().toString().padStart(2,'0');
+        return ore+":"+minute+":"+secunde;   
     });
     let tempActual=objArray[0];
     valTemp.textContent=tempActual.temperatura +"°C";
@@ -60,10 +62,11 @@ chartInstance=new Chart(graficDate,{
                 data:tempArray,
                 borderColor:'#4da6ff'
             },
+            
                 {
                     label: 'Umiditate (%)',
                     data: humidArray, // Datele pentru umiditate
-                    borderColor: '#ff9f43', // Culoare diferită (portocaliu)
+                    borderColor: '#9d88ff', // Culoare diferită (portocaliu)
                     backgroundColor: 'rgba(255, 159, 67, 0.1)',
                     tension: 0.3
                 }]
@@ -95,5 +98,14 @@ chartInstance=new Chart(graficDate,{
     });
 
 }
+function ceasRL(){
+    const oraCurenta=new Date();
+    const ore=oraCurenta.getHours().toString().padStart(2,'0');
+    const minute=oraCurenta.getMinutes().toString().padStart(2,'0');
+    const secunde=oraCurenta.getSeconds().toString().padStart(2,'0');
+    ceasAutomat.textContent=ore+":"+minute+":"+secunde;
+}
 afisareDate();
 setInterval(afisareDate, 5000);
+ceasRL();
+setInterval(ceasRL,1000);
