@@ -67,15 +67,20 @@ body{
 .aside {
     background-color: #0D1527;
   width: 250px;
-  height:100%;
+  height:100vh;
   padding: 0px 0px;
+  flex-direction: column;
+  box-sizing: border-box;
 }
 .meniu{
     width: 100%;
-    padding-top:75px;
-    margin-top:20px;
-    margin-right:50px;
-    height:100%;   
+    display:flex;
+    flex-grow:1;
+    padding-top:20px;
+    margin-top:0;
+   height: calc(100vh - 120px); 
+    flex-direction: column;
+    position: relative;
 }
 
 .display,.main {
@@ -332,4 +337,15 @@ width: 100%;
 }
 .temp_status:hover, .humid_status:hover,.grafic-zone:hover,.zona-grafic:hover,.temp:hover,.humid:hover {
     border-color: #4da6ff; /* Albastrul deschis neon pe care l-ai folosit la grafic */
+}
+
+#btnLogout:hover {
+  background-color: #bb2d3b;
+  color:white;
+}
+.logout-link {
+    margin-top: auto !important; /* Împinge link-ul jos de tot! */
+    margin-bottom: 30px !important; /* Spațiu fin față de marginea inferioară */
+    color: #ff6b6b !important;   /* Un roșu plăcut de avertizare */
+    font-weight: bold;
 }

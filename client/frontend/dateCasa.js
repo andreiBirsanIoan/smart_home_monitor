@@ -6,12 +6,18 @@ let btnData=document.getElementById("btn-data");
 const graficDate=document.getElementById("grafic");
 let valTemp=document.getElementById("valoare");
 let valHumid=document.getElementById("umiditate");
+const butonLogout=document.getElementById("btnLogout");
 const progressBar=document.getElementById("progress-bar");
 const progressHumid=document.getElementById("progress-humid");
 const ceasAutomat=document.getElementById("ceas");
 progressBar.min=10;
 progressBar.max=40;
  let chartInstance = null; 
+ butonLogout.addEventListener(('click'),(event)=>{
+    event.preventDefault();
+    localStorage.removeItem('token');
+    window.location.href='login.html';
+ })
 async function luareDatele(){
     
     const response=await fetch("http://localhost:8000/api/senzori");
