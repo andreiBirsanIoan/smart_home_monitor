@@ -30,24 +30,71 @@ const loginLimiter=rateLimit({
 });
 let senzoriData = {};//obiect, nu vector/array
 let pragCurent=25;
+let ultimaComunicare;
+let loguriEvenimente=[];
+function adaugaLogServer(tip,mesaj,valoare){
+  const oraActuala=new Date().toLocaleTimeString();
+  loguriEvenimente.unshift({
+    ora:oraActuala,
+    tip:tip,
+    mesaj:mesaj,
+    valoare:valoare
+  })
+  if(loguriEvenimente.length>20){
+    loguriEvenimente.pop();
+  }
+}
 app.get('/',(req,res)=>{
   res.redirect('/login.html');
 });
 app.post('/api/senzori', async(req, res) => {
+  ultimaComunicare=Date.now();
   if(req.body.prag!==undefined){
     pragCurent=parseFloat(req.body.prag);
     return res.json({status:'prag actualizat', prag:pragCurent});
   }
   senzoriData = req.body;
+  const {temperatura, umiditate, miscare}=req.body;
+  ultimaComunicare=Date.now();
+  if(temperatura>pragCurent){
+    adaugaLogServer('ALERT', `Prag depasit! Temperatura peste ${pragCurent}°C`, `${temperatura} °C`);
+
+  }
+  else if(temperatura>=pragCurent-2){
+    adaugaLogServer('WARN', `Prag depășit! Temp peste ${pragCurent}°C`, `${temperatura} °C`);
+  }
+  else if (miscare === true) {
+        adaugaLogServer('WARN', 'Mișcare detectată în incintă', 'PIR ACTIV');
+    } 
+    else {
+        adaugaLogServer('INFO', 'Pachet date recepționat cu succes', `${temperatura} °C`);
+    }
+  try{
   await pool.query(`INSERT INTO sensors(temperatura,miscare,umiditate) VALUES(?,?,?)`,[senzoriData.temperatura,senzoriData.miscare,senzoriData.umiditate]);
-  res.json({ prag: pragCurent});
+  }catch(err){
+    console.error("Eroare la salvarea datelor in DB:",err);  
+  }
+      res.json({ success: true, prag: pragCurent });
+
+});
+app.get('/api/status-esp',async(req,res)=>{
+  const secundeTrecute=(Date.now()-ultimaComunicare)/1000;
+  if(secundeTrecute<10){
+    res.json({online:true});
+  }
+  else{
+    res.json({online:false});
+  }
 });
 
 app.get('/api/senzori',verifyLogin, (req, res) => {
   res.json(senzoriData);
 });
+app.get('/api/evenimente', (req, res) => {
+    res.json(loguriEvenimente);
+});
 app.get('/api/istoric',verifyLogin, async(req,res)=>{
-  const [rows]=await pool.query('SELECT * FROM sensors ORDER BY id DESC LIMIT 5');
+  const [rows]=await pool.query('SELECT * FROM sensors ORDER BY id DESC LIMIT 30');
   res.json(rows);
 });
 app.post('/api/register', async(req,res)=>{

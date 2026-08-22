@@ -66,23 +66,49 @@ body{
 }
 .aside {
     background-color: #0D1527;
-  width: 250px;
-  height:100vh;
-  padding: 0px 0px;
-  flex-direction: column;
-  box-sizing: border-box;
-}
-.meniu{
-    width: 100%;
-    display:flex;
-    flex-grow:1;
-    padding-top:20px;
-    margin-top:0;
-   height: calc(100vh - 120px); 
+    width: 250px;
+    height: 100vh;
+    padding: 0 15px 20px 15px; /* Am adăugat spațiere în lateral și jos */
+    display: flex;             /* Necesare pentru a alinia logout-ul jos */
     flex-direction: column;
-    position: relative;
+    box-sizing: border-box;
+    border-right: 1px solid #141d30;
+}
+.nav-category {
+    font-size: 15px;
+    font-weight: 700;
+    color: #475569;
+    letter-spacing: 1.2px;
+    text-align: left;
+    margin-top:50px;
+    margin-bottom: 10px;
+    padding-left: 5px;
+    text-transform: uppercase;
+}
+.meniu {
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    flex-grow: 1; /* Ocupă tot spațiul rămas */
+}
+.meniu a {
+    display: flex !important;    /* Le punem pe flex pentru a alinia iconita si textul */
+    align-items: center;         /* Aliniere la mijloc pe verticala */
+    gap: 12px;                  /* Spatiu intre iconita si text */
+    padding: 12px 20px;
+    text-decoration: none;
+    color: inherit;
+    text-align: left;
+    border-radius: 8px;
+    transition: all 0.15s ease;
+}
+.menu-icon {
+    flex-shrink: 0;
+    transition: transform 0.2s ease;
 }
 
+/* Efect vizual cand treci cu mouse-ul peste optiune */
 .display,.main {
   flex-grow: 1;
   display: flex;
@@ -348,4 +374,50 @@ width: 100%;
     margin-bottom: 30px !important; /* Spațiu fin față de marginea inferioară */
     color: #ff6b6b !important;   /* Un roșu plăcut de avertizare */
     font-weight: bold;
+}
+#esp-status-badge {
+    display: inline-flex;
+    align-items: left;
+    padding: 6px 14px;
+    background-color: #0D1527;
+    border: 1.5px solid #274792;
+    border-radius: 8px;
+    font-size: 14px;
+    font-weight: 600;
+    letter-spacing: 0.5px;
+    transition: all 0.3s ease;
+}
+/* Stiluri pentru sectiunea de tabele */
+.table-container {
+    width: 100%;
+    overflow-x: auto;
+    background-color: #0d1527;
+    border: 1px solid #274792;
+    border-radius: 8px;
+    margin-top: 10px;
+}
+
+table {
+    width: 100%;
+    border-collapse: collapse;
+    text-align: left;
+    color: #e2e8f0;
+    font-size: 14px;
+}
+
+th, td {
+    padding: 12px 16px;
+    border-bottom: 1px solid #1e293b;
+}
+
+th {
+    background-color: #162238;
+    color: #4da6ff;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+}
+
+tr:hover {
+    background-color: #1a2744;
 }

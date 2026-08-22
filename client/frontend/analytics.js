@@ -11,6 +11,23 @@ const tempMinim=document.getElementById("min_sesiune");
 const tempMaxim=document.getElementById("max_sesiune");
 const graficDate=document.getElementById("grafic");
 const ceasActual=document.getElementById("ceas");
+async function verificaStatusESP(){
+    try{
+        const response=await fetch("http://localhost:8000/api/status-esp");
+        const data=await response.json();
+        const element=document.getElementById('esp-status-badge');
+        if(date.online){
+            element.innerText="ESP32:ONLINE";
+            element.style.color="#10b981";
+        }
+        else{
+            element.innerText="ESP32:OFFLINE";
+            element.style.color="#ff6b6b";
+        }
+    }catch(err) {
+        console.error("Eroare la verificare status:", err);
+    }
+}
 async function afisareDate(){
 const token = localStorage.getItem('token');
     const response=await fetch("http://localhost:8000/api/istoric",{
@@ -73,6 +90,7 @@ function ceasRL(){
     const secunde=oraCurenta.getSeconds().toString().padStart(2,'0');
     ceasActual.textContent=ore+":"+minute+":"+secunde;
 }
+setInterval(verificaStatusESP,3000);
 afisareDate();
 setInterval(afisareDate,5000);
 ceasRL();

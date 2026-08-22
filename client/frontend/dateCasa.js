@@ -18,6 +18,24 @@ progressBar.max=40;
     localStorage.removeItem('token');
     window.location.href='login.html';
  })
+ async function verificaStatusESP() {
+    try {
+        const response = await fetch("http://localhost:8000/api/status-esp");
+        const data = await response.json();
+        const element = document.getElementById('esp-status-badge');
+        if (!element) return;
+
+        if (data.online) {
+            element.innerText = "ESP32: ONLINE";
+            element.style.color = "#10b981"; // Verde
+        } else {
+            element.innerText = "ESP32: OFFLINE";
+            element.style.color = "#ff6b6b"; // Roșu
+        }
+    } catch (err) {
+        console.error("Eroare la verificare status ESP:", err);
+    }
+}
 async function luareDatele(){
     
     const response=await fetch("http://localhost:8000/api/senzori");

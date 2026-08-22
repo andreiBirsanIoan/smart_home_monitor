@@ -17,16 +17,30 @@
   </svg>
   <h1>SMART HOME</h1>
 </div>
-            
+            <div class="nav-category">NAVIGARE</div>
             <nav class="meniu">
-                <a href="analytics.html">Date senzori</a>
-                <a href="logs.html">Istoric securitate</a>
+                
+                <a href="analytics.html" class="active">
+        <svg class="menu-icon" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <rect x="3" y="3" width="7" height="7" rx="1"></rect>
+            <rect x="14" y="3" width="7" height="7" rx="1"></rect>
+            <rect x="14" y="14" width="7" height="7" rx="1"></rect>
+            <rect x="3" y="14" width="7" height="7" rx="1"></rect>
+        </svg>
+        <span>Date senzori</span>
+    </a>
+                <a href="logs.html">
+        <svg class="menu-icon" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"></path>
+        </svg>
+        <span>Istoric securitate</span>
+    </a>
                 <a href="#" id="btnLogout" class="logout-link">Deconectare</a>            </nav>
         </div>
         <div class="display">
            <div class="titlu_si_ceas">
             <h2>REZUMAT <span id="ceas" class="ceas-digital">00:00:00</span></h2> 
-            
+            <div id="esp-status-badge">ESP32: VERIFICARE...</div>
            </div> 
             <div class="cards">
             <div class="sup">

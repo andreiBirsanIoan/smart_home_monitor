@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html lang="ro">
+<head>
+    <meta charset="UTF-8">
+    <link rel="stylesheet" href="style.css">
+    <title>Istoric Senzori</title>
+</head>
+<body>
+    <div class="page">
+        <div class="aside">
+            <div class="logo-container">
+                <h1>SMART HOME</h1>
+            </div>
+            <nav class="meniu">
+                <a href="dashboard.html">Pagina Principala</a>
+                <a href="analytics.html">Analiza Date</a>
+            </nav>
+        </div>
+
+        <div class="main">
+            <div class="titlu_si_ceas">
+                <h2>ISTORIC SENZORI <span id="ceas" class="ceas-digital">00:00:00</span></h2>
+                <div id="esp-status-badge">ESP32: ...</div>
+            </div>
+
+            <div class="table-container">
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Data & Ora</th>
+                            <th>Temp</th>
+                            <th>Umiditate</th>
+                            <th>Mișcare</th>
+                        </tr>
+                    </thead>
+                    <tbody id="tabel-istoric">
+                        <!-- Se populează din JS -->
+                    </tbody>
+                </table>
+            </div>
+        </div> 
+    </div>
+
+    <script src="logs.js"></script>
+</body>
+</html>

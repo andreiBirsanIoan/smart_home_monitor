@@ -20,19 +20,23 @@ const char* password="511076c0";
 WiFiClient wifiClient;   // ← nou
 HTTPClient client;
 DHT dht(DHTPIN,DHTTYPE);
-float prag=30;
+RTC_DATA_ATTR float prag = 30;  // acum supraviețuiește deep sleep-ului
 float ultimaHumid=0;
 float ultimaTemp=0;
 bool ultima_miscare=false;
 unsigned long timpUltimaCitire=0;
 unsigned long intervalCitire=2000;
 void setup(){
-  display.begin(SSD1306_SWITCHCAPVCC, 0x3C);  // adresa I2C, de obicei 0x3C
-  display.clearDisplay();
+ pinMode(PIR_PIN, INPUT);
+   GPIO.enable_w1tc=(1<<PIR_PIN);
   GPIO.enable_w1ts=(1<<BUZZ_PIN);
+   display.begin(SSD1306_SWITCHCAPVCC, 0x3C);  // adresa I2C, de obicei 0x3C
+  display.clearDisplay();
+  display.setTextSize(1);
+  display.setTextColor(SSD1306_WHITE);
   WiFi.begin(ssid);
   dht.begin();
-  GPIO.enable_w1tc=(1<<PIR_PIN);
+  
   Serial.begin(115200);
   while(WiFi.status()!=WL_CONNECTED){
     delay(500);
@@ -44,9 +48,6 @@ void setup(){
   Serial.println(WiFi.localIP());
   }
 void loop(){
-  if(millis()-timpUltimaCitire>=intervalCitire){
-    timpUltimaCitire=millis();
-  }
   bool miscare=(GPIO.in>>PIR_PIN)&1;
   //bool miscare=0;
   Serial.println(miscare);
@@ -54,6 +55,9 @@ void loop(){
   float humid=dht.readHumidity();
   if(isnan(temp) || isnan(humid)){
     Serial.println("Eroare la citirea senzorului DHT!");
+    // Dacă senzorul dă eroare, citim din nou la următorul cicl de sleep
+    esp_sleep_enable_timer_wakeup(3 * 1000000);
+    esp_deep_sleep_start();
     return;
   }
  
@@ -87,7 +91,7 @@ void loop(){
     String textPrimit=client.getString();
     int valoarePrag=textPrimit.indexOf("\"prag\":");
     if(valoarePrag!=-1){
-      prag=textPrimit.substring(valoarePrag+7).toInt();
+      prag=textPrimit.substring(valoarePrag+7).toFloat();
     }
     Serial.println("Trimis cu succes, cod: " + String(httpCode));
   } else {
@@ -97,10 +101,6 @@ void loop(){
     ultimaTemp=temp;
     ultima_miscare=miscare;
     ultimaHumid=humid;
-  if((GPIO.in>>PIR_PIN) & 1){
-      return;
-  }
-  WiFi.disconnect(true);
   esp_sleep_enable_ext0_wakeup(GPIO_NUM_13,1);
   esp_sleep_enable_timer_wakeup(3*1000000);
   display.ssd1306_command(SSD1306_DISPLAYOFF);//oprire oled pentru deepSleep
