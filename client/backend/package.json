@@ -5,9 +5,9 @@
   "main": "server.js",
   "type": "module",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1",
-    "start": "node server.js"
-  },
+  "start": "node server.js",
+"test": "node --experimental-vm-modules node_modules/jest/bin/jest.js --coverage --detectOpenHandles --forceExit"
+},
   "keywords": [],
   "author": "",
   "license": "ISC",
@@ -19,5 +19,9 @@
     "jsonwebtoken": "^9.0.3",
     "mysql2": "^3.23.2",
     "open": "^11.0.1"
+  },
+  "devDependencies": {
+    "jest": "^30.4.2",
+    "supertest": "^7.2.2"
   }
 }

@@ -29,13 +29,18 @@ const loginLimiter=rateLimit({
   message: {error: 'Prea multe incercari. Asteapta 1 minut!' }
 });
 let senzoriData = {};//obiect, nu vector/array
+let pragCurent=25;
 app.get('/',(req,res)=>{
   res.redirect('/login.html');
 });
 app.post('/api/senzori', async(req, res) => {
+  if(req.body.prag!==undefined){
+    pragCurent=parseFloat(req.body.prag);
+    return res.json({status:'prag actualizat', prag:pragCurent});
+  }
   senzoriData = req.body;
   await pool.query(`INSERT INTO sensors(temperatura,miscare,umiditate) VALUES(?,?,?)`,[senzoriData.temperatura,senzoriData.miscare,senzoriData.umiditate]);
-  res.json({ status: 'ok' });
+  res.json({ prag: pragCurent});
 });
 
 app.get('/api/senzori',verifyLogin, (req, res) => {
@@ -76,3 +81,4 @@ app.listen(PORT, async () => {
 
     await open(`http://localhost:${PORT}`);
 });
+export default app;
