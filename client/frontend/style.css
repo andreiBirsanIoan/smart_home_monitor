@@ -311,12 +311,13 @@ width: 100%;
     border: 1px solid #1e293b; /* Bordura inițială, mai închisă */
     transition: border-color 0.3s ease;
 }
-.current_temp,.min_temp,.max_temp,.avg_temp{
+.current_temp,.min_temp,.max_temp,.avg_temp,.current_humid,.min_humid,.max_humid,.avg_humid{
      justify-content: space-between;
     display:flex;
 
     border-bottom:1px solid #2a2f3a; 
 }
+
 #temp_curent,#humid_curent{
     color:#00b0ff;
     text-align: right;

@@ -10,6 +10,7 @@ const butonLogout=document.getElementById("btnLogout");
 const progressBar=document.getElementById("progress-bar");
 const progressHumid=document.getElementById("progress-humid");
 const ceasAutomat=document.getElementById("ceas");
+const valoareTemp=document.getElementById("valoare");
 progressBar.min=10;
 progressBar.max=40;
  let chartInstance = null; 
@@ -66,6 +67,10 @@ async function afisareDate(){
         return ore+":"+minute+":"+secunde;   
     });
     let tempActual=objArray[0];
+    if(tempActual.temperatura>28){
+        valoareTemp.style.color='red';
+    }
+    else{ valoareTemp.style.color='white'};
     valTemp.textContent=tempActual.temperatura +"°C";
     let humidActual=objArray[0];
     valHumid.textContent=humidActual.umiditate+"%";
