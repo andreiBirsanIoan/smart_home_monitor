@@ -1,21 +1,14 @@
 #include <WiFi.h>
 #include <HTTPClient.h>
-#include <Wire.h>
-#include <Adafruit_GFX.h>
-#include <Adafruit_SSD1306.h>
 #include "DHT.h"
+#include "secrets.h"
 #include <ArduinoJson.h>
 #include "soc/gpio_struct.h"
-#define SCREEN_WIDTH 128
-#define SCREEN_HEIGHT 64
 #define PIR_PIN 13
 #define BUZZ_PIN 25
 #define DHTPIN 26
 #define DHTTYPE DHT11
 
-Adafruit_SSD1306 display(SCREEN_WIDTH, SCREEN_HEIGHT, &Wire, -1);
-const char *ssid = "TP-LINK_404B8E";
-const char *password = "511076c0";
 WiFiClient wifiClient;
 HTTPClient client;
 DHT dht(DHTPIN, DHTTYPE);
@@ -23,8 +16,7 @@ RTC_DATA_ATTR float prag = 30; // acum supraviețuiește deep sleep-ului
 float humid = 0;
 float temp = 0;
 bool miscare = false;
-unsigned long timpUltimaCitire = 0;
-unsigned long intervalCitire = 2000;
+int incercari=0;
 
 //=======================FUNCTII=====================
 void citireSenzori()
@@ -35,9 +27,6 @@ void citireSenzori()
   if (isnan(temp) || isnan(humid))
   {
     Serial.println("Eroare la citirea senzorului DHT!");
-    // Dacă senzorul dă eroare, citim din nou la următorul ciclu de sleep
-    esp_sleep_enable_timer_wakeup(3 * 1000000);
-    esp_deep_sleep_start();
     return;
   }
 }
@@ -98,24 +87,9 @@ void trimitereDate()
   }
 }
 
-void afisareDisplay()
-{
-  display.clearDisplay();
-  display.setTextSize(1);
-  display.setTextColor(SSD1306_WHITE);
-  display.setCursor(0, 0);
-  display.println("Temp: " + String(temp));
-  display.setCursor(0, 20);
-  display.println("Umiditate: " + String(humid));
-  display.setCursor(0, 40);
-  display.println("Miscare: " + String(miscare ? "DA" : "NU"));
-  display.display();
-}
-
 void pornesteDeepSleep()
 {
-  display.ssd1306_command(SSD1306_DISPLAYOFF); // oprire oled pentru deepSleep
-  esp_sleep_enable_ext0_wakeup(GPIO_NUM_13, 1);
+  esp_sleep_enable_ext0_wakeup((gpio_num_t)PIR_PIN, 1);
   esp_sleep_enable_timer_wakeup(3 * 1000000);
   WiFi.disconnect(true);
   WiFi.mode(WIFI_OFF);
@@ -123,24 +97,24 @@ void pornesteDeepSleep()
 }
 void setup()
 {
+
   GPIO.enable_w1tc = (1 << PIR_PIN);
   GPIO.enable_w1ts = (1 << BUZZ_PIN);
   GPIO.out_w1ts = (1 << BUZZ_PIN);
-  display.begin(SSD1306_SWITCHCAPVCC, 0x3C); // adresa I2C, de obicei 0x3C
-  display.clearDisplay();
-  display.setTextSize(1);
-  display.setTextColor(SSD1306_WHITE);
-  WiFi.begin(ssid);
+  
+  WiFi.begin(WIFI_SSID,WIFI_PASS);
   dht.begin();
 
   Serial.begin(115200);
-  while (WiFi.status() != WL_CONNECTED)
+  while (WiFi.status() != WL_CONNECTED && incercari < 20)
   {
     delay(500);
-    display.clearDisplay();
-    display.setCursor(0, 0);
-    display.println("Connecting...");
-    display.display();
+    Serial.println("Connecting...");
+    incercari++;
+  }
+  if(WiFi.status() != WL_CONNECTED){
+    pornesteDeepSleep(); // renunță, încearcă la următorul ciclu
+  return;
   }
   Serial.println(WiFi.localIP());
 
@@ -153,11 +127,7 @@ void setup()
   }
 
   setareBuzzer();
-
-  afisareDisplay();
-
   trimitereDate();
-
   pornesteDeepSleep();
 }
 void loop()
