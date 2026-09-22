@@ -13,8 +13,8 @@
 const uint8_t SECRET=0x50;
 uint8_t pachetPrimit[8];
 void setup() {
-  Serial.begin(115200); // Pentru calculator
-  Serial2.begin(9600, SERIAL_8N1, RX2_PIN, TX2_PIN); // Pentru Uno
+  Serial.begin(115200); // Pentru Serial
+  Serial2.begin(9600, SERIAL_8N1, RX2_PIN, TX2_PIN); // Pentru Arduino
   Serial.println("\n--- Sistem Pregatit ---");
 }
 
@@ -61,21 +61,26 @@ void decriptare(){
 }
 
 void loop() {
-  // Așteptăm să existe cel puțin 8 octeți în buffer
-  if (Serial2.available() >= 8) {
-    
+  // Calibrarea de la inceput ping-pong cu semnalul 0xFF
+  if (Serial2.available() >0) {
+    uint8_t byte=Serial2.peek();
+    if(byte==0xFF){
+      Serial2.read();
+      Serial2.write(0xFF);
+      return;
+    }
     // Verificăm dacă primul octet din buffer este HEADER-ul (0xF0 criptat cu 0x50 este 0xA0)
     if ((Serial2.peek() ^ SECRET) == 0xF0) {
-      
-      // Citim pachetul aliniat corect
+      if(Serial2.available()>=8){
+      // Citesc pachetul primit
       for (int i = 0; i < 8; i++) {
         pachetPrimit[i] = Serial2.read();
       }
 
-      decriptare(); // Procesați pachetul
-      
+      decriptare(); // Procesare pachet
+      }
     } else {
-      // Dacă primul octet NU este header-ul, îl aruncăm pentru a avansa cu 1 pozitie în buffer
+
       Serial2.read(); 
     }
   }
