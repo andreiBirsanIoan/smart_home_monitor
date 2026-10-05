@@ -82,7 +82,7 @@ int calibrareSemnal(){
 }
 void setup() {
   noInterrupts();
-  // Pornim Serial-ul pe D1
+  // Pornesc transmisiunea pe portul serial
   UBRR0=103;
   UCSR0B=0x98;
   UCSR0C=0x06;
@@ -94,7 +94,7 @@ void setup() {
   EICRA |= (1 << ISC01) | (1 << ISC00);
   EIMSK |= (1 << INT0);
   interrupts();
-  // AsTEPT 3 SECUNDE ca ESP32 sa se trezeasca complet din boot!
+  // Astept 3 SECUNDE ca ESP32 sa se trezeasca complet din boot!
 
   delay(3000); 
     sistemCalibrat=calibrareSemnal();

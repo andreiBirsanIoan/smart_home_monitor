@@ -22,21 +22,21 @@ uint8_t citireDHT11_BareMetal() {
   PORTD |= (1 << PD6);    // Activează Pull-up intern de siguranță
 
   noInterrupts();
-  // Asteptam semnalul de LOW de la senzor(~80us)
+  // Astept semnalul de LOW de la senzor(~80us)
   timp_counter = 0;
   while (PIND & (1 << PD6)) {
     _delay_us(1);
     if (++timp_counter > 200){ interrupts(); return 1;} // Cod eroare 1: Senzorul nu a tras linia în LOW (Răspuns lipsă)
   }
 
-  // Asteptam semnalul HIGH de la senzor (~80us)
+  // Astept semnalul HIGH de la senzor (~80us)
   timp_counter = 0;
   while (!(PIND & (1 << PD6))) {
     _delay_us(1);
     if (++timp_counter > 200){ interrupts(); return 2;} // Cod eroare 2: Senzorul a rămas blocat în LOW
   }
 
-  // Așteptăm terminarea semnalului HIGH al răspunsului
+  // Aștept terminarea semnalului HIGH al răspunsului
   timp_counter = 0;
   while (PIND & (1 << PD6)) {
     _delay_us(1);
@@ -50,7 +50,7 @@ uint8_t citireDHT11_BareMetal() {
       _delay_us(1);
       if (++timp_counter > 200){ interrupts(); return 4;} // Cod eroare 4: Timeout la debutul bitului
     }
-    // Măsurăm durata stării HIGH a bitului
+    // Măsor durata stării HIGH a bitului
     timp_counter = 0;
     while (PIND & (1 << PD6)) {
       _delay_us(1);

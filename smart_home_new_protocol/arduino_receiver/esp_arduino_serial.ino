@@ -72,12 +72,12 @@ void trimitereSenzori(float temperatura, float umiditate, uint8_t pir, uint8_t l
     HTTPClient client;
     WiFiClient wifiClient;
 
-    // 1. Construim URL-ul dinamic (fără IP hardcodat)
+    // 1. Construiesc URL-ul dinamic (fără IP hardcodat)
     String fullUrl = String(url) + "/api/senzori";
     client.begin(wifiClient, fullUrl);
     client.addHeader("Content-Type", "application/json");
 
-    // 2. Serializăm datele primite din pachetul decriptat
+    // 2. Serializare date primite din pachetul decriptat
     JsonDocument docTrimitere;
     docTrimitere["temperatura"] = temperatura;
     docTrimitere["umiditate"] = umiditate;
@@ -87,7 +87,7 @@ void trimitereSenzori(float temperatura, float umiditate, uint8_t pir, uint8_t l
     char valoriSenzori[128];
     serializeJson(docTrimitere, valoriSenzori);
 
-    // 3. Trimitem cererea POST
+    // 3. Trimit cererea POST
     int httpCode = client.POST(valoriSenzori);
     Serial.print("HTTP Code: ");
     Serial.println(httpCode);
@@ -100,7 +100,6 @@ void trimitereSenzori(float temperatura, float umiditate, uint8_t pir, uint8_t l
     GPIO.out_w1ts = (1 << BUZZ_PIN);
   }
     if (httpCode > 0) {
-      // Păstrăm logica ta de citire răspuns JSON de la server!
       String raspuns = client.getString();
       JsonDocument docRaspuns;
       DeserializationError error = deserializeJson(docRaspuns, raspuns);
@@ -127,7 +126,7 @@ void trimitereSenzori(float temperatura, float umiditate, uint8_t pir, uint8_t l
       Serial.print("Eroare HTTP la trimitere senzori: ");
       Serial.println(httpCode);
       
-      // Aprindem LED Roșu în caz de eroare la server
+      // Aprind LED Roșu în caz de eroare la server
       GPIO.out_w1ts = (1 << RED);
       momentAprindere = millis();
       ledAprins = true;
