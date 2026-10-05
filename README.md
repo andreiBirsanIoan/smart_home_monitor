@@ -30,10 +30,10 @@ DB_NAME=smart_home
 4. `node server.js`
 
 ### ESP32
-1. Deschizi `esp32/smart_home.ino` în Arduino IDE
-2. Actualizezi `ssid` și `password` cu datele tale WiFi
-3. Actualizezi IP-ul serverului în `client.begin(...)`
-4. Încarci codul pe placă
+1. Se deschide `esp32/smart_home.ino` în Arduino IDE
+2. Se actualizeaza `ssid` și `password` cu datele WiFi proprii
+3. Se incarca IP-ul serverului în `client.begin(...)`
+4. Se incarca codul pe placă
 
 ## Ce urmează
 - Senzor real de temperatură (DHT11)
