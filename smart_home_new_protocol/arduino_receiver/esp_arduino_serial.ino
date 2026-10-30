@@ -3,6 +3,7 @@
 #include <HTTPClient.h>
 #include <ArduinoJson.h>
 #include "sendRFID.h"
+#include "secrets.h"
 #define HEADER   0
 #define UMID_INT 1
 #define UMID_ZEC 2
@@ -15,8 +16,6 @@
 #define RX2_PIN 16
 #define TX2_PIN 17
 
-const char* ssid = "DIGI_df69a9";
-const char* password = "511076c0";
 const char* SERVER_URL="http://DESKTOP-ML2LVDI.local:8000";
 int incercari=0;
 float prag = 30.0;//prag implicit de temperatura
@@ -28,7 +27,7 @@ void setup() {
   Serial.begin(115200); // Pentru Serial
   Serial2.begin(9600, SERIAL_8N1, RX2_PIN, TX2_PIN); // Pentru Arduino
   Serial.println("\n--- Sistem Pregatit ---");
-  WiFi.begin(ssid,password);
+  WiFi.begin(WIFI_SSID, WIFI_PASS);
   Serial.println("Conectare...");
   
    while(WiFi.status()!= WL_CONNECTED && incercari<20){

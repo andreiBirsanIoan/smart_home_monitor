@@ -24,7 +24,6 @@ istoricul măsurătorilor, graficele și starea dispozitivului.
 - Parole protejate cu bcrypt
 - Autentificare JWT pentru rutele protejate
 - Rate limiting pentru autentificare
-- Deep sleep pentru reducerea consumului ESP32
 
 ## Arhitectură
 
@@ -47,13 +46,12 @@ ESP32 + DHT11 + HC-SR501 + OLED + buzzer
 ### Hardware și firmware
 
 - ESP32
+- Arduino AtMega328p
 - Arduino C++
-- DHT11
+- DHT22
 - HC-SR501
-- OLED SSD1306
 - Buzzer
 - Wi-Fi
-- Deep sleep
 
 ### Backend
 
@@ -116,9 +114,6 @@ smart_home_server/
    http://localhost:8000
    ```
 
-Nu publica fișierul `.env` și nu folosi parola contului MySQL `root` într-un
-mediu de producție.
-
 ### ESP32
 
 1. Deschide `esp32/smart_home/smart_home.ino` în Arduino IDE.
@@ -138,48 +133,19 @@ rularea proiectului în modul local.
 
 ## API principal
 
-| Metodă | Rută | Descriere | Autentificare |
-|---|---|---|---|
-| `POST` | `/api/register` | Creează un utilizator | Nu |
-| `POST` | `/api/login` | Autentifică un utilizator și returnează JWT | Nu |
-| `GET` | `/api/verify-token` | Verifică token-ul curent | Bearer JWT |
-| `GET` | `/api/senzori` | Returnează ultimele date ale senzorilor | Bearer JWT |
-| `GET` | `/api/istoric` | Returnează istoricul măsurătorilor | Bearer JWT |
-| `GET` | `/api/evenimente` | Returnează evenimentele serverului | Bearer JWT |
-| `GET` | `/api/status-esp` | Verifică dacă ESP32 a comunicat recent | Nu |
-| `POST` | `/api/senzori` | Primește date de la ESP32 | Dispozitiv local |
+| Metodă | Rută                | Descriere                                   | Autentificare    |
+| ------ | ------------------- | ------------------------------------------- | ---------------- |
+| `POST` | `/api/register`     | Creează un utilizator                       | Nu               |
+| `POST` | `/api/login`        | Autentifică un utilizator și returnează JWT | Nu               |
+| `GET`  | `/api/verify-token` | Verifică token-ul curent                    | Bearer JWT       |
+| `GET`  | `/api/senzori`      | Returnează ultimele date ale senzorilor     | Bearer JWT       |
+| `GET`  | `/api/istoric`      | Returnează istoricul măsurătorilor          | Bearer JWT       |
+| `GET`  | `/api/evenimente`   | Returnează evenimentele serverului          | Bearer JWT       |
+| `GET`  | `/api/status-esp`   | Verifică dacă ESP32 a comunicat recent      | Nu               |
+| `POST` | `/api/senzori`      | Primește date de la ESP32                   | Dispozitiv local |
 
 Pentru rutele protejate, clientul trimite:
 
 ```text
 Authorization: Bearer <token>
 ```
-
-## Testare
-
-Backend-ul include Jest și SuperTest în dependențele de dezvoltare. Testele pot
-fi rulate cu:
-
-```powershell
-cd server/backend
-npm test
-```
-
-## Siguranță
-
-- Folosește un `JWT_SECRET` lung și aleatoriu.
-- Nu publica parolele Wi-Fi, parola bazei de date sau token-urile.
-- Ține `.env` și `secrets.h` în afara repository-ului.
-- Pentru deployment public, folosește HTTPS.
-- Protejează endpoint-ul care primește date de la ESP32 cu o cheie de dispozitiv
-  sau cu semnături HMAC.
-- Folosește un utilizator MySQL cu permisiuni limitate.
-
-## Idei pentru dezvoltare ulterioară
-
-- Autentificare dedicată pentru ESP32
-- Comunicare HTTPS între ESP32 și server
-- Controlul automat al unui ventilator prin releu
-- Notificări pentru alarme
-- Deployment în cloud
-- Backup automat pentru baza de date

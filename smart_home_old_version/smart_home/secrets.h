@@ -1,2 +1,0 @@
-#define WIFI_SSID "TP-LINK_404B8E"
-#define WIFI_PASS "511076c0"

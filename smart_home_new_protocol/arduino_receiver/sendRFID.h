@@ -4,8 +4,6 @@
 #include "scanRFID.h"
 #define RED 14
 #define GREEN 21
-const char* ssid = "DIGI_df69a9";
-const char* password = "511076c0";
 int incercari=0;
 bool ledAprins=false;
 unsigned long momentAprindere=0;
