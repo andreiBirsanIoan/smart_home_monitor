@@ -1,16 +1,18 @@
-import jwt from 'jsonwebtoken';
-import 'dotenv/config';
-export function verifyLogin(req,res,next){
-   if(!req.headers.authorization){
-    return res.status(401).json({status:'neautentificat'});
-   }
-   const token=req.headers.authorization.split(' ')[1];
-   try{
-    const decoded=jwt.verify(token,process.env.JWT_SECRET);
-    req.user = decoded;
+import jwt from "jsonwebtoken";
+import "dotenv/config";
+
+export function verifyLogin(req, res, next) {
+  const authorization = req.headers.authorization;
+  const [scheme, token] = authorization?.split(" ") ?? [];
+
+  if (scheme !== "Bearer" || !token) {
+    return res.status(401).json({ error: "Token de autentificare lipsă" });
+  }
+
+  try {
+    req.user = jwt.verify(token, process.env.JWT_SECRET);
     next();
-   }
-   catch(err){
-    return res.status(401).json({error:'TOKEN LIPSA'});
-   }
+  } catch {
+    return res.status(401).json({ error: "Token invalid sau expirat" });
+  }
 }

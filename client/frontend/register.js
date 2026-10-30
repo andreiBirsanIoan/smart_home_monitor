@@ -12,6 +12,9 @@ buttonRegister.addEventListener('click',async function(event){
                 body:JSON.stringify({username:username,password:password})
             })
             const data=await response.json();
+            if(!response.ok){
+                throw new Error(data.error || data.message || "Eroare la crearea contului");
+            }
             if(data.status==='utilizator creat'){
                 buttonRegister.innerText="CONT CREAT! REDIRECȚIONARE...";
                 buttonRegister.style.backgroundColor="#00ff88";
@@ -21,11 +24,11 @@ buttonRegister.addEventListener('click',async function(event){
                 },2000);
             }
             else{
-                alert(data.message || "Eroare la crearea contului!");
+                alert(data.error || data.message || "Eroare la crearea contului!");
 
             }
     }catch(error){
         console.error("Eroare de conexiune:",error);
-        alert("Server indisponibil");
+        alert(error.message || "Server indisponibil");
     }
 });

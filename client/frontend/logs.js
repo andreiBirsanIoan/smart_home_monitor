@@ -6,23 +6,36 @@ function removeTable() {
 async function incarcaIstoric() {
   try {
     const token = localStorage.getItem("token");
+    if (!token) {
+      window.location.href = "login.html";
+      return;
+    }
     const res = await fetch("http://localhost:8000/api/istoric", {
       headers: { Authorization: "Bearer " + token },
     });
+    if (res.status === 401) {
+      localStorage.removeItem("token");
+      window.location.href = "login.html";
+      return;
+    }
+    if (!res.ok) throw new Error("History request failed");
     const date = await res.json();
 
-    tbody.innerHTML = date
-      .map(
-        (r) => `
-            <tr >
-                <td>${new Date(r.timestamp).toLocaleTimeString()}</td>
-                <td>${r.temperatura} °C</td>
-                <td>${r.umiditate} %</td>
-                <td>${r.miscare ? " DETECTATĂ" : " OK"}</td>
-            </tr>
-        `,
-      )
-      .join("");
+    tbody.replaceChildren();
+    date.forEach((r) => {
+      const row = document.createElement("tr");
+      [
+        new Date(r.timestamp).toLocaleTimeString(),
+        `${r.temperatura} °C`,
+        `${r.umiditate} %`,
+        r.miscare ? "DETECTATĂ" : "OK",
+      ].forEach((value) => {
+        const cell = document.createElement("td");
+        cell.textContent = value;
+        row.appendChild(cell);
+      });
+      tbody.appendChild(row);
+    });
   } catch (err) {
     console.error("Eroare incarcare date:", err);
   }
@@ -31,12 +44,15 @@ async function incarcaIstoric() {
 async function verificaStatusESP() {
   try {
     const res = await fetch("http://localhost:8000/api/status-esp");
+    if (!res.ok) throw new Error("Status request failed");
     const data = await res.json();
     const badge = document.getElementById("esp-status-badge");
 
     badge.innerText = data.online ? "ESP32: ONLINE" : "ESP32: OFFLINE";
     badge.style.color = data.online ? "#10b981" : "#ff6b6b";
-  } catch (e) {}
+  } catch (e) {
+    console.error("Eroare verificare status ESP:", e);
+  }
 }
 
 function ceasRL() {

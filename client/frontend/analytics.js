@@ -11,20 +11,21 @@ const tempMinim = document.getElementById("min_sesiune");
 const tempMaxim = document.getElementById("max_sesiune");
 const humidMedie = document.getElementById("avg_sesiune_h");
 const humidCurent = document.getElementById("humid_curent");
-const humidMinim = document.getElementById("min_sesiune)h");
+const humidMinim = document.getElementById("min_sesiune_h");
 const humidMaxim = document.getElementById("max_sesiune_h");
 const graficDate = document.getElementById("grafic");
 const ceasActual = document.getElementById("ceas");
 async function verificaStatusESP() {
   try {
     const response = await fetch("http://localhost:8000/api/status-esp");
+    if (!response.ok) throw new Error("Status request failed");
     const data = await response.json();
     const element = document.getElementById("esp-status-badge");
-    if (date.online) {
-      element.innerText = "ESP32:ONLINE";
+    if (data.online) {
+      element.innerText = "ESP32 : ONLINE";
       element.style.color = "#10b981";
     } else {
-      element.innerText = "ESP32:OFFLINE";
+      element.innerText = "ESP32 : OFFLINE";
       element.style.color = "#ff6b6b";
     }
   } catch (err) {
@@ -33,12 +34,27 @@ async function verificaStatusESP() {
 }
 async function afisareDate() {
   const token = localStorage.getItem("token");
+  if (!token) {
+    window.location.href = "login.html";
+    return;
+  }
   const response = await fetch("http://localhost:8000/api/istoric", {
     headers: {
       Authorization: "Bearer " + token,
     },
   });
+  if (response.status === 401) {
+    localStorage.removeItem("token");
+    window.location.href = "login.html";
+    return;
+  }
+  if (!response.ok) throw new Error("History request failed");
   const data = await response.json();
+  if (!Array.isArray(data) || data.length === 0) {
+    tempCurent.textContent = "Nicio dată";
+    humidCurent.textContent = "Nicio dată";
+    return;
+  }
   objArray = data;
   date.push(new Date(data.timestamp));
   tempArray = objArray.map((obj) => obj.temperatura);
