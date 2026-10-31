@@ -6,9 +6,10 @@ import cors from "cors";
 import bcrypt from "bcrypt";
 import jwt from "jsonwebtoken";
 import "dotenv/config";
-import { verifyLogin } from "./middleware/auth.js";
+import { verifyLogin, verifyRole } from "./middleware/auth.js";
 import path from "path";
 import { fileURLToPath } from "url";
+import { type } from "os";
 const app = express();
 const jwtSecret = process.env.JWT_SECRET;
 
@@ -58,20 +59,11 @@ app.get("/api/dashboard-data", verifyLogin, (req, res) => {
 });
 app.post("/api/senzori", async (req, res) => {
   //pentru esp32 cand trimite datele spre server
-  if (req.body.prag !== undefined) {
-    const prag = Number(req.body.prag);
-    if (!Number.isFinite(prag) || prag < -40 || prag > 100) {
-      return res
-        .status(400)
-        .json({ error: "Pragul trebuie să fie între -40 și 100" });
-    }
-    pragCurent = prag;
-    ultimaComunicare = Date.now();
-    return res.json({ status: "prag actualizat", prag: pragCurent });
-  }
 
   const { temperatura, umiditate, miscare } = req.body;
   if (
+    typeof temperatura !== "number" ||
+    typeof umiditate !== "number" ||
     !Number.isFinite(Number(temperatura)) ||
     !Number.isFinite(Number(umiditate)) ||
     typeof miscare !== "boolean" ||
@@ -84,8 +76,6 @@ app.post("/api/senzori", async (req, res) => {
       error: "Datele senzorilor sunt invalide",
     });
   }
-
-  ultimaComunicare = Date.now();
   senzoriData = req.body;
   //const {temperatura, umiditate, miscare}=req.body;
   ultimaComunicare = Date.now(); //memorez momentul comunicarii datelor
@@ -122,6 +112,19 @@ app.post("/api/senzori", async (req, res) => {
     return res.status(503).json({ error: "Datele nu au putut fi salvate" });
   }
   res.json({ success: true, prag: pragCurent });
+});
+app.put("/api/prag", verifyLogin, verifyRole, (req, res) => {
+  const { prag } = req.body;
+  if (
+    typeof prag !== "number" ||
+    !Number.isFinite(prag) ||
+    prag < -40 ||
+    prag > 100
+  ) {
+    return res.status(400).json({ error: "Prag Invalid" });
+  }
+  pragCurent = prag;
+  return res.status(200).json({ message: "Prag modificat cu succes" });
 });
 //verifica statusul esp32, daca au trecut prea multe secunde de la ultima comunicare
 app.get("/api/status-esp", async (req, res) => {

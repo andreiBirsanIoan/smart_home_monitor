@@ -16,3 +16,14 @@ export function verifyLogin(req, res, next) {
     return res.status(401).json({ error: "Token invalid sau expirat" });
   }
 }
+export function verifyRole(req, res, next) {
+  if (!req.user) {
+    return res.status(401).json({ error: "Utilizator neautentificat" });
+  }
+  if (req.user.role !== "admin") {
+    return res
+      .status(403)
+      .json({ error: "Acces interzis. Necesita rol de admin" });
+  }
+  next();
+}
