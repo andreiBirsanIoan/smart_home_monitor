@@ -1,8 +1,56 @@
 const ceasActual = document.getElementById("ceas");
 const tbody = document.getElementById("tabel-istoric");
+const salvarePrag = document.getElementById("salveazaPrag");
+const pragCitit = document.getElementById("prag");
+const butonLogout = document.getElementById("btnLogout");
 function removeTable() {
   tbody.innerHTML = "";
 }
+salvarePrag.addEventListener("click", async function () {
+  const token = localStorage.getItem("token");
+  const valoareInput = pragCitit.value;
+
+  if (valoareInput.trim() === "") {
+    alert("Setează o valoare");
+    return;
+  }
+  const pragNou = Number(valoareInput);
+  if (pragNou < -40 || pragNou > 100) {
+    alert("Pragul trebuie să fie între -40 și 100");
+    return;
+  }
+
+  if (!token) {
+    alert("Trebuie să fii autentificat");
+    return;
+  } else {
+    try {
+      const response = await fetch("http://localhost:8000/api/prag", {
+        method: "PUT",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${token}`,
+        },
+
+        body: JSON.stringify({ prag: pragNou }),
+      });
+      if (response.status === 400) {
+        alert("Prag invalid");
+      } else if (response.status === 401) {
+        alert("Trebuie să te autentifici");
+      } else if (response.status === 403) {
+        alert("Nu ai drepturi de administrator");
+      } else if (response.ok) {
+        alert("Pragul a fost modificat cu succes!");
+      } else {
+        alert("A apărut o eroare");
+      }
+    } catch (error) {
+      console.error(error);
+      alert("Eroare de comunicare cu serverul");
+    }
+  }
+});
 async function incarcaIstoric() {
   try {
     const token = localStorage.getItem("token");
@@ -54,6 +102,11 @@ async function verificaStatusESP() {
     console.error("Eroare verificare status ESP:", e);
   }
 }
+butonLogout.addEventListener("click", (event) => {
+  event.preventDefault();
+  localStorage.removeItem("token");
+  window.location.href = "login.html";
+});
 
 function ceasRL() {
   const oraCurenta = new Date();

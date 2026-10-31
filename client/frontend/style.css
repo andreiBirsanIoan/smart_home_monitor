@@ -2,8 +2,9 @@ body{
     margin:0;
     padding:0;
     text-align: center;
+    justify-content: center;
     background-color:#090D1A;
-    color:gray;
+    color:white;
     font-family: 'Courier New', Courier, monospace;
 }
 .page{
@@ -377,9 +378,9 @@ width: 100%;
     font-weight: bold;
 }
 #esp-status-badge {
-    display: inline-flex;
-    align-items: left;
-    padding: 6px 14px;
+    justify-content: center;
+    width:25vh;
+    padding: 9px 14px;
     background-color: #0D1527;
     border: 1.5px solid #274792;
     border-radius: 8px;
@@ -387,6 +388,7 @@ width: 100%;
     font-weight: 600;
     letter-spacing: 0.5px;
     transition: all 0.3s ease;
+    margin:0 auto;
 }
 /* Stiluri pentru sectiunea de tabele */
 .table-container {
@@ -421,4 +423,52 @@ th {
 
 tr:hover {
     background-color: #1a2744;
+}
+
+.prag-card {
+    background: #1e293b;
+    padding: 20px;
+    border-radius: 10px;
+    width: 280px;
+    color: white;
+    margin:0 auto;
+    margin-bottom:25px;
+}
+
+.prag-card label {
+    display: block;
+    margin-bottom: 10px;
+    font-weight: bold;
+}
+
+#prag {
+    width: 100%;
+    padding: 10px;
+    background: #334155;
+    color: white;
+    border: 1px solid #475569;
+    border-radius: 6px;
+    font-size: 16px;
+    box-sizing: border-box;
+    color-scheme: dark;
+}
+
+#prag:focus {
+    outline: none;
+    border-color: #3b82f6;
+}
+
+#salveazaPrag {
+    margin-top: 15px;
+    padding: 10px;
+    width: 100%;
+    background: #2563eb;
+    color: white;
+    border: none;
+    border-radius: 6px;
+    cursor: pointer;
+}
+
+#salveazaPrag:hover {
+    background: #1d4ed8;
 }

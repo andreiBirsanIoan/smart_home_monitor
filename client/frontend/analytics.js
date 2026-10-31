@@ -15,6 +15,13 @@ const humidMinim = document.getElementById("min_sesiune_h");
 const humidMaxim = document.getElementById("max_sesiune_h");
 const graficDate = document.getElementById("grafic");
 const ceasActual = document.getElementById("ceas");
+const butonLogout = document.getElementById("btnLogout");
+butonLogout.addEventListener("click", (event) => {
+  event.preventDefault();
+  localStorage.removeItem("token");
+  window.location.href = "login.html";
+});
+
 async function verificaStatusESP() {
   try {
     const response = await fetch("http://localhost:8000/api/status-esp");

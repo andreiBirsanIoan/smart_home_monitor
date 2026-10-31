@@ -2,6 +2,7 @@
 #include <WiFi.h>
 #include <HTTPClient.h>
 #include <ArduinoJson.h>
+#include "soc/gpio_struct.h"
 #include "sendRFID.h"
 #include "secrets.h"
 #define HEADER   0
@@ -16,18 +17,25 @@
 #define RX2_PIN 16
 #define TX2_PIN 17
 
-const char* SERVER_URL="http://DESKTOP-ML2LVDI.local:8000";
+// const char* ssid = "DIGI_df69a9";
+// const char* password = "511076c0";
+const char* ssid = WIFI_SSID;
+const char* password = WIFI_PASSWORD;
+const char* serverUrl = SERVER_URL;
 int incercari=0;
 float prag = 30.0;//prag implicit de temperatura
 const uint8_t SECRET=0x50;
-uint8_t pachetPrimit[8];
+int indexPachet=0;
+bool gasit=false;
+uint8_t pachet[8];
+uint8_t decriptat[8];
 void setup() {
    GPIO.enable_w1ts = (1 << BUZZ_PIN);
   GPIO.out_w1ts = (1 << BUZZ_PIN);
   Serial.begin(115200); // Pentru Serial
   Serial2.begin(9600, SERIAL_8N1, RX2_PIN, TX2_PIN); // Pentru Arduino
   Serial.println("\n--- Sistem Pregatit ---");
-  WiFi.begin(WIFI_SSID, WIFI_PASS);
+  WiFi.begin(ssid,password);
   Serial.println("Conectare...");
   
    while(WiFi.status()!= WL_CONNECTED && incercari<20){
@@ -40,43 +48,17 @@ void setup() {
   setupRFID();
   sendDataSetup();
 }
-
-void calibrare(){
-  if (Serial2.available() >0) {
-    uint8_t byte=Serial2.peek();
-    if(byte==0xFF){
-      Serial2.read();
-      Serial2.write(0xFF);
-      return;
-    }
-    // Verific dacă primul octet din buffer este HEADER-ul (0xF0 criptat cu 0x50 este 0xA0)
-    if ((byte ^ SECRET) == 0xF0) {
-      if(Serial2.available()>=8){
-      // Citesc pachetul primit
-      for (int i = 0; i < 8; i++) {
-        pachetPrimit[i] = Serial2.read();
-      }
-
-      decriptare(); // Procesare pachet
-      }
-    } else {
-
-      Serial2.read(); 
-    }
-  }
-}
-
 void trimitereSenzori(float temperatura, float umiditate, uint8_t pir, uint8_t light, const char* url) {
   if (WiFi.status() == WL_CONNECTED) {
     HTTPClient client;
     WiFiClient wifiClient;
 
-    // 1. Construiesc URL-ul dinamic (fără IP hardcodat)
+    // 1. Construim URL-ul dinamic (fără IP hardcodat)
     String fullUrl = String(url) + "/api/senzori";
     client.begin(wifiClient, fullUrl);
     client.addHeader("Content-Type", "application/json");
 
-    // 2. Serializare date primite din pachetul decriptat
+    // 2. Serializăm datele primite din pachetul decriptat
     JsonDocument docTrimitere;
     docTrimitere["temperatura"] = temperatura;
     docTrimitere["umiditate"] = umiditate;
@@ -86,7 +68,7 @@ void trimitereSenzori(float temperatura, float umiditate, uint8_t pir, uint8_t l
     char valoriSenzori[128];
     serializeJson(docTrimitere, valoriSenzori);
 
-    // 3. Trimit cererea POST
+    // 3. Trimitem cererea POST
     int httpCode = client.POST(valoriSenzori);
     Serial.print("HTTP Code: ");
     Serial.println(httpCode);
@@ -99,6 +81,7 @@ void trimitereSenzori(float temperatura, float umiditate, uint8_t pir, uint8_t l
     GPIO.out_w1ts = (1 << BUZZ_PIN);
   }
     if (httpCode > 0) {
+      // Păstrăm logica de citire răspuns JSON de la server!
       String raspuns = client.getString();
       JsonDocument docRaspuns;
       DeserializationError error = deserializeJson(docRaspuns, raspuns);
@@ -107,7 +90,7 @@ void trimitereSenzori(float temperatura, float umiditate, uint8_t pir, uint8_t l
         if (docRaspuns.containsKey("prag")) {
           prag = docRaspuns["prag"].as<float>();
           Serial.print("Noul prag primit de la server: ");
-          Serial.println(noulPrag);
+          Serial.println(prag);
         }
       } else {
         Serial.print("Eroare JSON: ");
@@ -134,24 +117,7 @@ void trimitereSenzori(float temperatura, float umiditate, uint8_t pir, uint8_t l
     client.end();
   }
 }
-
 void decriptare(){
-  uint8_t decriptat[8];
-  for(int i=0;i<8;i++){
-    decriptat[i]=pachetPrimit[i] ^ SECRET;
-  }
-  if(decriptat[HEADER]!=0xF0){
-    Serial.println("HEADER INVALID! DATE CORUPTE");
-    return;
-  }
-  uint8_t chkCalculat=0x00;
-  for(int i=0;i<7;i++){
-    chkCalculat ^= decriptat[i];
-  }
-  if(chkCalculat != decriptat[CHECKSUM]){
-    Serial.println("CHECKSUM GRESIT");
-    return;
-  }
   Serial.println("\n==================================");
   Serial.println("   PACHET NOU RECEPTIONAT & VALIDAT");
   Serial.println("==================================");
@@ -175,12 +141,71 @@ void decriptare(){
   Serial.println(decriptat[LIGHT] ? "LUMINA (1)" : "INTUNERIC (0)");
   
   Serial.println("==================================\n");
-  float umiditate=decriptat[UMID_INT]+(decriptat[UMID_ZEC]/100.0);
-  float temperatura=decriptat[TEMP_INT]+(decriptat[TEMP_ZEC]/100.0);
+  float umiditate=decriptat[UMID_INT]+(decriptat[UMID_ZEC]/10.0f);
+  float temperatura=decriptat[TEMP_INT]+(decriptat[TEMP_ZEC]/10.0f);
   uint8_t pir=decriptat[PIR];
   uint8_t light=decriptat[LIGHT];
   trimitereSenzori(temperatura, umiditate, pir, light, SERVER_URL);
 }
+
+void calibrare(){ //transmitere semnal de inceput
+
+  while (Serial2.available() >0) {
+    uint8_t byte=Serial2.read();
+    if(indexPachet==0){
+      if((byte ^ SECRET) == 0xF0){
+        pachet[indexPachet]=byte;
+        indexPachet++;
+      }
+    }
+    else if(indexPachet>0){
+        pachet[indexPachet]=byte;
+        indexPachet++;
+      }
+    
+    if(indexPachet==8){
+      for(int i=0;i<indexPachet;i++){
+        decriptat[i]=pachet[i]^SECRET;
+      }
+      int checksum=0;
+          for(int i=0;i<indexPachet-1;i++){
+              checksum^=decriptat[i];
+              
+          }
+       
+          if(checksum==decriptat[CHECKSUM] && decriptat[HEADER]==0xF0){
+                Serial.println("PACHET VALID!");
+                decriptare();
+                indexPachet=0;
+              }
+          
+        
+        else{
+          
+          gasit=false;
+          int indexHeader;
+          for(int i=1;i<indexPachet;i++){
+            if(decriptat[i]==0xF0){
+              indexHeader=i;
+              gasit=true;
+              for(int i=0;i<(indexPachet-indexHeader);i++){
+                pachet[i]=pachet[i+indexHeader];
+              }
+              indexPachet-=indexHeader;
+              break;
+            }
+          }
+          if(!gasit){
+            indexPachet=0;
+          }
+          
+        }
+      }
+    }
+  }
+//trimitere date de la senzori prin http la backend
+
+
 
 
 void loop() {

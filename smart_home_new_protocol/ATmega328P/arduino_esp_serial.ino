@@ -1,120 +1,163 @@
 #include <Arduino.h>
 #include "dhtRead.h"
-#define HEADER   0
+#define HEADER 0
 #define UMID_INT 1
 #define UMID_ZEC 2
 #define TEMP_INT 3
 #define TEMP_ZEC 4
-#define PIR      5
-#define LIGHT    6
+#define PIR 5
+#define LIGHT 6
 #define CHECKSUM 7
-uint8_t secret=0x50;
-volatile bool pachetPrimit=false;
+#define PIR_PIN 2
+#define LDR_PIN 7
+volatile uint8_t secunde = 0;
+volatile bool treiSecunde = false;
+int temperatura_int, umiditate_int, temperatura_zec, umiditate_zec;
+uint8_t secret = 0x50;
+volatile bool pachetPrimit = false;
 bool sistemCalibrat;
 uint8_t pachet[8];
-volatile bool miscare=false;
+volatile bool miscare = false;
 
+// intrerupere externa pe int0
 
-
-ISR(INT0_vect){
-  miscare=true;
+ISR(INT0_vect)
+{ // intrerupere exclusiv pentru PD2 (pinul 2)
+  miscare = true;
 }
 
-ISR(USART_RX_vect){
-  if(UDR0==0xFF){
-    pachetPrimit=true;
-  }
-}
-
-void crearePachet(){
-  pachet[HEADER]=0xF0;
-  int rezultat=citireDHT11_BareMetal();
-  if(rezultat==0){
-      pachet[UMID_INT]=dht_date[0];
-      pachet[UMID_ZEC]=dht_date[1];
-      pachet[TEMP_INT]=dht_date[2];
-      pachet[TEMP_ZEC]=dht_date[3];
-  }
-  pachet[PIR]=(PIND & (1<<PD2))? 1:0;
-  pachet[LIGHT]=0;
-  pachet[LIGHT]=(PIND & (1<<PD7))? 1:0;
-  uint8_t chk=0x00;
-  for(int i=0;i<7;i++){
-    chk^=pachet[i];
-  }
-  pachet[CHECKSUM]=chk;
-  
-}
-
-void criptareDate(){
-  for(int i=0;i<8;i++){
-    pachet[i]^=secret;
+ISR(TIMER1_COMPA_vect)
+{
+  secunde++;
+  if (secunde == 3)
+  {
+    secunde = 0;
+    treiSecunde = true;
   }
 }
 
-int verificareDate(){ //verific daca datele sunt in limite normale
-  if(dht_date[0] < 20 || dht_date[0] > 90){ //umiditate in intervalul [20,90]
-      return 0;
+int verificareDateDHT22()
+{
+  if (temperatura_int < -40 || temperatura_int > 80)
+  {
+    return 0;
   }
-  if(dht_date[2] < 0 || dht_date[2] > 50){ //temperatura intre [0,50]
+  if (umiditate_int < 0 || umiditate_int > 100)
+  {
     return 0;
   }
   return 1;
 }
 
+bool crearePachet()
+{
+  if (!readDHT(temperatura_int, umiditate_int,
+               temperatura_zec, umiditate_zec))
+  {
+    return false;
+  }
 
+  if (!verificareDateDHT22())
+  {
+    return false;
+  }
 
-int calibrareSemnal(){
-  for(int i=0;i<3;i++){
-      TCNT1=0;
-      pachetPrimit=false;
-     
-      while(!(UCSR0A & (1<<UDRE0)));
-      UDR0=0xFF;
-      while(!pachetPrimit && TCNT1<15625){ //neaparat bucla de asteptare pentru receptie semnal
-      
-      }
-      if(!pachetPrimit || TCNT1 >15625){
-        return 0;
-      }
+  pachet[HEADER] = 0xF0;
+  pachet[UMID_INT] = umiditate_int;
+  pachet[UMID_ZEC] = umiditate_zec;
+  pachet[TEMP_INT] = temperatura_int;
+  pachet[TEMP_ZEC] = temperatura_zec;
+
+  // pachet[PIR] = miscare ? 1 : 0;
+
+  // Temporar, până integrezi citirea LDR.
+  pachet[LIGHT] = 0;
+
+  uint8_t chk = 0;
+  for (int i = 0; i < 7; i++)
+  {
+    chk ^= pachet[i];
+  }
+
+  pachet[CHECKSUM] = chk;
+
+  return true;
+}
+void criptareDate()
+{
+  for (int i = 0; i < 8; i++)
+  {
+    pachet[i] ^= secret;
+  }
+}
+
+int calibrareSemnal()
+{
+  for (int i = 0; i < 3; i++)
+  {
+    TCNT1 = 0;
+    pachetPrimit = false;
+
+    while (!(UCSR0A & (1 << UDRE0)))
+      ;
+    UDR0 = 0xFF;
+    while (!pachetPrimit && TCNT1 < 15625)
+    { // neaparat bucla de asteptare pentru receptie semnal
+    }
+    if (!pachetPrimit || TCNT1 > 15625)
+    {
+      return 0;
+    }
   }
   return 1;
 }
-void setup() {
+void setup()
+{
   noInterrupts();
-  // Pornesc transmisiunea pe portul serial
-  UBRR0=103;
-  UCSR0B=0x98;
-  UCSR0C=0x06;
-  DDRD &= ~(1<<PD2); //PIR
-  DDRD &= ~(1<<PD7);
+  initDHT();
+  // Pornim Serial-ul pe D1
+  // baud 9600
+  UBRR0 = 103;
+  UCSR0B = 0x98;
+  UCSR0C = 0x06;
+  DDRD &= ~(1 << PIR_PIN); // PIR
+  DDRD &= ~(1 << LDR_PIN); // ldr
   TCCR1A = 0x00;
-  TCCR1B = 0x05;
-  //setare pentru schimbare pe front crescator(cand trece senzorul de PIR din 0 in 1)
-  EICRA |= (1 << ISC01) | (1 << ISC00);
-  EIMSK |= (1 << INT0);
+  TCCR1B = (1 << WGM12) | (1 << CS12) | (1 << CS10); // prescale 1024
+  TCNT1 = 0;
+  TIMSK1 |= (1 << OCIE1A);
+  OCR1A = 15624;
+  // setare pentru orice schimbare
+  EICRA |= (1 << ISC01) | (1 << ISC00); // rising value(trece din 0 in 1)
+  EIMSK |= (1 << INT0);                 // intreruperi pe PD2
   interrupts();
-  // Astept 3 SECUNDE ca ESP32 sa se trezeasca complet din boot!
+  // AȘTEPT 3 SECUNDE ca ESP32 să se trezească complet din boot!
 
-  delay(3000); 
-    sistemCalibrat=calibrareSemnal();
+  delay(3000);
+  sistemCalibrat = true;
 }
-void loop() {
-  if(!sistemCalibrat){
-    sistemCalibrat=calibrareSemnal();
-    return;
-  }
-    bool auTrecut3Secunde = (TCNT1 >= 46875);
-    if(miscare || auTrecut3Secunde){
-      TCNT1=0;// resetez ceasul de 3 secunde
-      miscare=false;
-      crearePachet();
-      if(verificareDate()){
-        criptareDate();
-        for(int i=0;i<8;i++){
-          while(!(UCSR0A & (1<<UDRE0)));
-          UDR0=pachet[i];
-        }
-      } 
+void loop()
+{
+  if (treiSecunde)
+  {
+    treiSecunde = false;
+    noInterrupts();
+    bool miscareDetectata = miscare;
+    miscare = false;
+    interrupts();
+
+    pachet[PIR] = miscareDetectata ? 1 : 0;
+
+    if (crearePachet())
+    {
+      criptareDate();
+
+      for (int i = 0; i < 8; i++)
+      {
+        while (!(UCSR0A & (1 << UDRE0)))
+          ;
+        UDR0 = pachet[i];
+      }
     }
+  }
 }
