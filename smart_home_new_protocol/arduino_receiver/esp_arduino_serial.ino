@@ -23,6 +23,9 @@ const char* ssid = WIFI_SSID;
 const char* password = WIFI_PASSWORD;
 const char* serverUrl = SERVER_URL;
 int incercari=0;
+bool pachetPregatit = false;
+unsigned long ultimulOctet = 0;
+const unsigned long TIMEOUT_UART = 100;
 float prag = 30.0;//prag implicit de temperatura
 const uint8_t SECRET=0x50;
 int indexPachet=0;
@@ -149,9 +152,15 @@ void decriptare(){
 }
 
 void calibrare(){ //transmitere semnal de inceput
+if (indexPachet > 0 &&
+    millis() - ultimulOctet > TIMEOUT_UART) {
+    indexPachet = 0;
+    Serial.println("Timeout UART!");
+}
 
   while (Serial2.available() >0) {
     uint8_t byte=Serial2.read();
+    ultimulOctet = millis();
     if(indexPachet==0){
       if((byte ^ SECRET) == 0xF0){
         pachet[indexPachet]=byte;
@@ -176,8 +185,12 @@ void calibrare(){ //transmitere semnal de inceput
           if(checksum==decriptat[CHECKSUM] && decriptat[HEADER]==0xF0){
                 Serial.println("PACHET VALID!");
                 decriptare();
+                pachetPregatit = true;
                 indexPachet=0;
               }
+              if (checksum != decriptat[CHECKSUM]) {
+    Serial.println("TEST: Checksum invalid!");
+}
           
         
         else{
@@ -212,5 +225,9 @@ void loop() {
   // Calibrarea de la inceput ping-pong cu semnalul 0xFF
   stingereAutomata();
   calibrare();
+  if (pachetPregatit) {
+        pachetPregatit = false;
+        decriptare();
+  }
   trimitereDateRFID(SERVER_URL);
 }
